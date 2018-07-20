@@ -1,7 +1,7 @@
-OperaTextBlockBundle
+OperaAdminBundle
 =============
 
-The `OperaTextBlockBundle` provide a simple text / html for opera-project cms
+The `OperaAdminBundle` provide the admin based on easyadmin for opera-project cms
 
 License
 =======
