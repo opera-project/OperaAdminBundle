@@ -22,6 +22,8 @@
 </div>
 
 <div id="blocks" class="col-sm-8">
+    {% include "@OperaAdmin/admin_pages/_new_block.html.twig" %}
+
     {% for name in page.layout.configuration.areas %}
         <div id="tab_area_{{ name }}" class="tab_area" {% if loop.first %}style="display: block"{% endif %}>
             <h2>{% trans with { '%area%': name } from 'OperaAdmin' %}Blocks of %area%{% endtrans %}</h2>
@@ -64,11 +66,14 @@
 {# TODO exetenalize #}
 <script>
     $(document).ready(function() {
+        $("#new_block_area").val($("[name=current_area]:checked")[0].value);
+
         $('[name=current_area]').on('change', function() {
             $('.tab_area').hide();
             $('.area.active').removeClass('active');
             $("[name=current_area]:checked").parent('label').addClass('active');
             $("#tab_area_" + $("[name=current_area]:checked")[0].value).show();
+            $("#new_block_area").val($("[name=current_area]:checked")[0].value);
         });
 
         var formListener = function(e) {

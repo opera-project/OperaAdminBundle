@@ -1,0 +1,29 @@
+{% form_theme form with easyadmin_config('design.form_theme') %}
+
+
+<div class="row">
+    <div class="field-group col-xs-12 ">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ "New block"|trans({}, "OperaAdmin") }}</h3>
+                <a class="pull-right" role="button" data-toggle="collapse" aria-expanded="true" href="#box-body-new">
+                    <i class="fa fa-plus-square-o"></i>
+                    <i class="fa fa-minus-square-o"></i>
+                </a>
+            </div>
+            
+            <div class="box-body collapsed collapse" id="box-body-new" aria-expanded="false">    
+                <div class="row">
+                    <div class="col-xs-12 form-renderer">
+                        {{ form_start(form) }}
+                            {{ form_rest(form) }}
+                            <button type="submit" class="btn btn-primary action-save">
+                                <i class="fa fa-save"></i> {{ 'action.save'|trans }}
+                            </button>
+                        {{ form_end(form) }}
+                    </div>
+                <div>
+            </div>
+        </div>
+    </div>
+</div>
