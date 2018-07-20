@@ -1,0 +1,12 @@
+{% form_theme form with easyadmin_config('design.form_theme') %}
+
+{{ form_start(form, { attr: { action: path('opera_admin_pages_block_edit', {id: block.id}) } }) }}
+{{ form_row(form.name) }}
+<div class="form-group">
+    {{ form_widget(form.configuration) }}
+</div>
+
+<button type="submit" class="btn btn-primary action-save">
+    <i class="fa fa-save"></i> {{ 'action.save'|trans }}
+</button>
+{{ form_end(form) }}

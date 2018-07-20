@@ -1,0 +1,143 @@
+{% extends [
+    easyadmin_config('design.templates.layout'),
+    '@EasyAdmin/default/layout.html.twig'
+] %}
+
+{% block page_title -%}
+    {% trans from 'OperaAdmin' %}Manage pages{% endtrans %}
+{%- endblock %}
+
+{% block content_title %}
+    {% trans with { '%page%': page.title } from 'OperaAdmin' %}Layout for page %page%{% endtrans %}
+{% endblock %}
+
+{% block main %}
+<div id="layout" class="col-sm-4">
+    {% for name in page.layout.configuration.areas %}
+        <label class="area area-{{ name }} {% if loop.first %}active{% endif %}" for="area_{{ name }}">
+            <input type="radio" id="area_{{ name }}" name="current_area" value="{{ name }}" {% if loop.first %}checked{% endif %}/>
+            {{ name }}
+        </label>
+    {% endfor %}
+</div>
+
+<div id="blocks" class="col-sm-8">
+    {% for name in page.layout.configuration.areas %}
+        <div id="tab_area_{{ name }}" class="tab_area" {% if loop.first %}style="display: block"{% endif %}>
+            <h2>{% trans with { '%area%': name } from 'OperaAdmin' %}Blocks of %area%{% endtrans %}</h2>
+
+            {% if blocks_in_area[name] is defined %}
+                {% for _block in blocks_in_area[name] %}
+                <div class="row">
+                    <div class="field-group col-xs-12 ">
+                        <div class="box box-default">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">{{ _block.name }}</h3>
+                                <a class="pull-right" role="button" data-toggle="collapse" aria-expanded="true" href="#box-body-{{ _block.id }}">
+                                    <i class="fa fa-plus-square-o"></i>
+                                    <i class="fa fa-minus-square-o"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="box-body collapsed collapse" id="box-body-{{ _block.id }}" aria-expanded="false">    
+                                <div class="row">
+                                    <div class="col-xs-12 form-renderer">
+                                        {{ render(controller(block_controller, {
+                                            'block': _block,
+                                            'page': page,
+                                        })) }}
+                                    </div>
+                                <div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                {% trans from 'OperaAdmin' %}Empty area{% endtrans %}
+            {% endif %}
+        </div>
+        
+    {% endfor %}
+</div>
+
+{# TODO exetenalize #}
+<script>
+    $(document).ready(function() {
+        $('[name=current_area]').on('change', function() {
+            $('.tab_area').hide();
+            $('.area.active').removeClass('active');
+            $("[name=current_area]:checked").parent('label').addClass('active');
+            $("#tab_area_" + $("[name=current_area]:checked")[0].value).show();
+        });
+
+        var formListener = function(e) {
+            e.preventDefault();
+            $('.tab_area form').off('submit', formListener);
+
+            var form = this;
+            $(this).addClass('loading');
+
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function(data) {
+                    $(form).removeClass('loading');
+                    $(form).parents('.box').find('.box-title').html($(data).find('#form_name').val());
+                    $(form).parents('.form-renderer').html(data);
+
+                    $('.tab_area form').on('submit', formListener);
+                }
+            });
+        };
+
+        $('.tab_area form').on('submit', formListener);
+    });
+</script>
+<style>
+    #layout {
+        display: grid;
+        margin: 0 auto;
+        
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat({{ page.layout.configuration.layout|length }}, 40px);
+        grid-gap: 1em;
+        
+        grid-template-areas: {% for layout in page.layout.configuration.layout %}"{{ layout }}" {% endfor %}
+    }
+
+    .area {
+        background: lightgrey;
+        border: 1px solid lightgrey;
+        min-height: 50px;
+        padding: 1em;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .loading {
+        opacity: 0.6;
+    }
+
+    .area.active {
+        background: white;
+    }
+
+    .area input {
+        position: absolute;
+        left: -3000px;
+    }
+
+    .tab_area {
+        display: none;
+    }
+
+    {% for alias, name in page.layout.configuration.areas %}
+        .area-{{ name }} {
+            grid-area: {{ alias }};
+        }
+    {% endfor %}
+</style>
+{% endblock %}
