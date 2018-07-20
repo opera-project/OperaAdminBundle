@@ -2,9 +2,12 @@
 
 {{ form_start(form, { attr: { action: path('opera_admin_pages_block_edit', {id: block.id}) } }) }}
 {{ form_row(form.name) }}
+
+{% if form.configuration is defined %}
 <div class="form-group">
     {{ form_widget(form.configuration) }}
 </div>
+{% endif %}
 
 <button type="submit" class="btn btn-primary action-save">
     <i class="fa fa-save"></i> {{ 'action.save'|trans }}
