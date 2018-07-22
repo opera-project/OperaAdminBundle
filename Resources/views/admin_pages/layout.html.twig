@@ -25,36 +25,40 @@
     {% include "@OperaAdmin/admin_pages/_new_block.html.twig" %}
 
     {% for name in page.layout.configuration.areas %}
-        <div id="tab_area_{{ name }}" class="tab_area" {% if loop.first %}style="display: block"{% endif %}>
+        <div id="tab_area_{{ name }}" class="tab_area" 
+                data-update-position-url="{{ path('update_positions', { id: page.id, area: name }) }}"
+                {% if loop.first %}style="display: block"{% endif %}>
             <h2>{% trans with { '%area%': name } from 'OperaAdmin' %}Blocks of %area%{% endtrans %}</h2>
 
             {% if blocks_in_area[name] is defined %}
-                {% for _block in blocks_in_area[name] %}
-                <div class="row">
-                    <div class="field-group col-xs-12 ">
-                        <div class="box box-default">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">{{ _block.name }}</h3>
-                                <a class="pull-right" role="button" data-toggle="collapse" aria-expanded="true" href="#box-body-{{ _block.id }}">
-                                    <i class="fa fa-plus-square-o"></i>
-                                    <i class="fa fa-minus-square-o"></i>
-                                </a>
-                            </div>
-                            
-                            <div class="box-body collapsed collapse" id="box-body-{{ _block.id }}" aria-expanded="false">    
-                                <div class="row">
-                                    <div class="col-xs-12 form-renderer">
-                                        {{ render(controller(block_controller, {
-                                            'block': _block,
-                                            'page': page,
-                                        })) }}
-                                    </div>
-                                <div>
+                <ul class="sortable">
+                    {% for _block in blocks_in_area[name] %}
+                    <li class="row" data-block-id="{{ _block.id }}">
+                        <div class="field-group">
+                            <div class="box box-default">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">{{ _block.name }}</h3>
+                                    <a class="pull-right collapsed" role="button" data-toggle="collapse" aria-expanded="false" href="#box-body-{{ _block.id }}">
+                                        <i class="fa fa-plus-square-o"></i>
+                                        <i class="fa fa-minus-square-o"></i>
+                                    </a>
+                                </div>
+                                
+                                <div class="box-body collapsed collapse" id="box-body-{{ _block.id }}" aria-expanded="false">    
+                                    <div class="row">
+                                        <div class="col-xs-12 form-renderer">
+                                            {{ render(controller(block_controller, {
+                                                'block': _block,
+                                                'page': page,
+                                            })) }}
+                                        </div>
+                                    <div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                {% endfor %}
+                    </li>
+                    {% endfor %}
+                </ul>
             {% else %}
                 {% trans from 'OperaAdmin' %}Empty area{% endtrans %}
             {% endif %}
@@ -64,8 +68,54 @@
 </div>
 
 {# TODO exetenalize #}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<style>
+    .sortable {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+    .sortable li {
+        margin: 0;
+        display: block;
+    }
+
+    .ui-state-highlight { 
+        background: white;
+        border: 1px solid #eee;
+    }
+
+</style>
 <script>
     $(document).ready(function() {
+       
+
+        $( ".sortable" ).sortable({
+            placeholder: "ui-state-highlight",
+            forcePlaceholderSize: true,
+            update: function(event, ui) {
+                var positions = {};   
+
+                $('.tab_area:visible .sortable > li').each(function(index, element) {
+                    positions[$(element).data('block-id')] = index;
+                });
+
+                $( ".sortable" ).addClass('loading');
+
+                $.ajax({
+                    type: "POST",
+                    url: $('.tab_area:visible').data('update-position-url'),
+                    data: { positions: positions },
+                    success: function(data) {
+                        $(".sortable").removeClass('loading');
+                    }
+                });
+
+            }
+        });
+        $( ".sortable" ).disableSelection();
+
         $("#new_block_area").val($("[name=current_area]:checked")[0].value);
 
         $('[name=current_area]').on('change', function() {
