@@ -78,4 +78,18 @@ class AdminPagesController extends Controller
             'block' => $block,
         ];
     }
+
+    /**
+     * @Route("/block/{id}/delete", name="opera_admin_pages_block_delete")
+     */
+    public function deleteBlock(Block $block)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($block);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('opera_admin_pages_blocks', [
+            "id" => $block->getPage()->getId(),
+        ]);
+    }
 }

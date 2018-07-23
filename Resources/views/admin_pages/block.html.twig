@@ -12,4 +12,9 @@
 <button type="submit" class="btn btn-primary action-save">
     <i class="fa fa-save"></i> {{ 'action.save'|trans }}
 </button>
+
+<a href="{{ path('opera_admin_pages_block_delete', { id: block.id }) }}" class="text-danger action-delete">
+    {{ 'action.delete'|trans }}
+</a>
+
 {{ form_end(form) }}
