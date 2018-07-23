@@ -14,8 +14,8 @@
 {% block main %}
 <div id="layout" class="col-sm-4">
     {% for name in page.layout.configuration.areas %}
-        <label class="area area-{{ name }} {% if loop.first %}active{% endif %}" for="area_{{ name }}">
-            <input type="radio" id="area_{{ name }}" name="current_area" value="{{ name }}" {% if loop.first %}checked{% endif %}/>
+        <label class="area area-{{ name }} {% if (loop.first and (area is not defined or area == '')) or area == name %}active{% endif %}" for="area_{{ name }}">
+            <input type="radio" id="area_{{ name }}" name="current_area" value="{{ name }}" {% if (loop.first and (area is not defined or area == '')) or area == name %}checked{% endif %}/>
             {{ name }}
         </label>
     {% endfor %}
@@ -27,7 +27,7 @@
     {% for name in page.layout.configuration.areas %}
         <div id="tab_area_{{ name }}" class="tab_area" 
                 data-update-position-url="{{ path('update_positions', { id: page.id, area: name }) }}"
-                {% if loop.first %}style="display: block"{% endif %}>
+                {% if (loop.first and (area is not defined or area == '')) or area == name %}style="display: block"{% endif %}>
             <h2>{% trans with { '%area%': name } from 'OperaAdmin' %}Blocks of %area%{% endtrans %}</h2>
 
             {% if blocks_in_area[name] is defined %}

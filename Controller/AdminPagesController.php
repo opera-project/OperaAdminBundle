@@ -42,6 +42,7 @@ class AdminPagesController extends Controller
             'page' => $page,
             'block_controller' => get_class($this).'::block',
             'form' => $form->createView(),
+            'area' => isset($block) ? $block->getArea() : $request->get('area'),
         ];
     }
 
@@ -89,7 +90,8 @@ class AdminPagesController extends Controller
         $entityManager->flush();
 
         return $this->redirectToRoute('opera_admin_pages_blocks', [
-            "id" => $block->getPage()->getId(),
+            'id' => $block->getPage()->getId(),
+            'area' => $block->getArea(),
         ]);
     }
 }
