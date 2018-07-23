@@ -133,6 +133,13 @@
             var form = this;
             $(this).addClass('loading');
 
+            // CKEDITOR
+            if (CKEDITOR) {
+                for (var instanceId in CKEDITOR.instances) {
+                    CKEDITOR.instances[instanceId].element.$.value = CKEDITOR.instances[instanceId].getData();
+                }
+            }
+
             $.ajax({
                 type: "POST",
                 url: $(this).attr('action'),
