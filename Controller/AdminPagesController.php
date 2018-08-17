@@ -28,7 +28,7 @@ class AdminPagesController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $block = $form->getData();
+            $block = $blockManager->cleanBlockConfiguration($form->getData());
             $block->setPage($page);
 
             $entityManager = $this->getDoctrine()->getManager();
