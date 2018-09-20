@@ -15,6 +15,7 @@ easy_admin:
                     - slug
                     - { property: 'status', type: 'choice', type_options: { choices: { 'published': 'published', 'draft': 'draft' } } }
                     - route
+                    - { property: 'is_regexp', help: 'If is not a route and want dynamics params' }
                     - layout
                     - { type: 'tab' , label: 'SEO', icon: 'search' }
                     - { property: meta_keyword, type: textarea }
