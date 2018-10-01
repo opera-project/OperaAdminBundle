@@ -20,3 +20,4 @@ easy_admin:
                     - { type: 'tab' , label: 'SEO', icon: 'search' }
                     - { property: meta_keyword, type: textarea }
                     - { property: meta_description, type: textarea }
+                    - { property: complementary_meta, type: textarea }
