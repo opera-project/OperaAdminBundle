@@ -12,6 +12,7 @@ use Opera\CoreBundle\Repository\BlockRepository;
 use Opera\CoreBundle\Cms\BlockManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Opera\AdminBundle\Form\NewBlockType;
+use Opera\CoreBundle\Event\BlockUpdatedEvent;
 
 class AdminPagesController extends Controller
 {   
@@ -72,6 +73,8 @@ class AdminPagesController extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($block);
             $entityManager->flush();
+
+            $eventDispatcher->dispatch('opera.block.updated', new BlockUpdatedEvent($blockManager->getBlockType($block), $block));
         }
         
         return [
