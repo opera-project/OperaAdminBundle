@@ -74,7 +74,7 @@ class AdminPagesController extends Controller
             $entityManager->persist($block);
             $entityManager->flush();
 
-            $eventDispatcher->dispatch('opera.block.updated', new BlockUpdatedEvent($blockManager->getBlockType($block), $block));
+            $this->get('event_dispatcher')->dispatch('opera.block.updated', new BlockUpdatedEvent($blockManager->getBlockType($block), $block));
         }
         
         return [
