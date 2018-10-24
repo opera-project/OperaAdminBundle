@@ -36,7 +36,7 @@
                     <li class="row" data-block-id="{{ _block.id }}">
                         <div class="field-group">
                             <div class="box box-default">
-                                <div class="box-header with-border">
+                                <div class="box-header with-border sort-handle">
                                     <h3 class="box-title">{{ _block.name }} (type: {{_block.type}})</h3>
                                     <a class="pull-right collapsed" role="button" data-toggle="collapse" aria-expanded="false" href="#box-body-{{ _block.id }}">
                                         <i class="fa fa-plus-square-o"></i>
@@ -106,6 +106,7 @@
         $( ".sortable" ).sortable({
             placeholder: "ui-state-highlight",
             forcePlaceholderSize: true,
+            handle: '.sort-handle',
             update: function(event, ui) {
                 var positions = {};   
 
