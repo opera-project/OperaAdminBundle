@@ -7,7 +7,13 @@ class JsonToPrettyJsonTransformer implements DataTransformerInterface
 {
     public function transform($value)
     {
-        return json_encode($value);
+        $result = json_encode($value);
+
+        if ($result === 'null') {
+            return "";
+        }
+
+        return $result;
     }
 
     public function reverseTransform($value)

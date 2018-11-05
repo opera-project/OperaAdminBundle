@@ -15,6 +15,7 @@ easy_admin:
                     - { property: 'slug', type_options: { required: false } }
                     - { property: 'status', type: 'choice', type_options: { choices: { 'published': 'published', 'draft': 'draft' } } }
                     - route
+                    - { property: 'configuration', type: 'Opera\AdminBundle\Form\JsonType' }
                     - { property: 'requirements', type: 'Opera\AdminBundle\Form\JsonType' }
                     - { property: 'is_regexp', help: 'If is not a route and want dynamics params' }
                     - layout
