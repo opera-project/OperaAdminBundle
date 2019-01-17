@@ -23,3 +23,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    
+    Opera\AdminBundle\Form\RouteChoiceType:
+        arguments: [ '@router' ]
+        tags: 
+            - { name: 'form.type', alias: 'operaadmin_routechoice' }
