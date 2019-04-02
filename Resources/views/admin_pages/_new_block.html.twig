@@ -1,21 +1,20 @@
 {% form_theme form with easyadmin_config('design.form_theme') %}
 
-
 <div class="row">
-    <div class="field-group col-12" style="padding-right: 25px;">
+    <div class="field-group col-12" style="padding-right: 25px;padding-top: 15px;">
         <div class="box box-default">
             <div class="box-header with-border">
                 <h3 class="box-title">{{ "New block"|trans({}, "OperaAdmin") }}</h3>
                 <div class="d-flex flex-row-reverse bd-highlight">
-                    <a class="pull-collapse" type="button" data-toggle="collapse" aria-expanded="false"
+                    <a class="pull-collapse" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="box-body-new"
                        href="#box-body-new">
                         <i class="fa fa-plus-square-o"></i>
-                        <i class="fa fa-minus-square-o" style="display: none;" ></i>
+                        <i class="fa fa-minus-square-o" style="display: none;"></i>
                     </a>
                 </div>
             </div>
 
-            <div class="box-body collapse.show" id="box-body-new" aria-expanded="false">
+            <div class="box-body collapse" id="box-body-new" aria-expanded="false">
                 <div class="row">
                     <div class="col-12 form-renderer">
                         {{ form_start(form) }}
@@ -43,8 +42,8 @@
         padding: 11px 10px 10px 15px;
     }
 
-    /*.box-header.with-border {*/
-        /*border-bottom: 1px solid #f4f4f4;*/
-        /*border-bottom-color: rgb(244, 244, 244);*/
-    /*}*/
+    .box-header.with-border {
+        border-bottom: 1px solid #f4f4f4;
+        border-bottom-color: rgb(244, 244, 244);
+    }
 </style>
