@@ -38,27 +38,28 @@
                             {% for _block in blocks_in_area[name] %}
                                 <li class="row" data-block-id="{{ _block.id }}">
                                     <div class="field-group">
-                                            <div class="box-header with-border sort-handle">
-                                                <h3 class="box-title" style="display: inline-block">{{ _block.name }} (type: {{ _block.type }})</h3>
-                                                <div class="d-flex flex-row-reverse bd-highlight">
-                                                    <a class="pull collapsed" role="button" data-toggle="collapse"
-                                                       aria-expanded="false" href="#box-body-{{ _block.id }}">
-                                                        <i class="fa fa-500px" aria-hidden="true" style="float: right; padding-top: 1em"></i>
-                                                    </a>
-                                                </div>
+                                        <div class="box-header with-border sort-handle">
+                                            <h3 class="box-title" style="display: inline-block">{{ _block.name }}
+                                                (type: {{ _block.type }})</h3>
+                                            <div class="d-flex flex-row-reverse bd-highlight">
+                                                <a class="pull collapsed" role="button" data-toggle="collapse"
+                                                   aria-expanded="false" href="#box-body-{{ _block.id }}">
+                                                    <i class="fa" aria-hidden="true"></i>
+                                                </a>
                                             </div>
+                                        </div>
 
-                                            <div class="box-body collapsed collapse" id="box-body-{{ _block.id }}"
-                                                 aria-expanded="false">
-                                                <div class="row">
-                                                    <div class="col-12 form-renderer">
-                                                        {{ render(controller(block_controller, {
-                                                            'block': _block,
-                                                            'page': page,
-                                                        })) }}
-                                                    </div>
+                                        <div class="box-body collapsed collapse" id="box-body-{{ _block.id }}"
+                                             aria-expanded="false">
+                                            <div class="row">
+                                                <div class="col-12 form-renderer">
+                                                    {{ render(controller(block_controller, {
+                                                        'block': _block,
+                                                        'page': page,
+                                                    })) }}
                                                 </div>
                                             </div>
+                                        </div>
                                     </div>
                                 </li>
                             {% endfor %}
@@ -87,6 +88,11 @@
 
         a.collapsed .fa::before {
             content: "\f139";
+        }
+
+        .fa {
+            float: right;
+            padding-top: 1em;
         }
 
         .sortable li {
