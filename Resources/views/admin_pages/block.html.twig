@@ -4,9 +4,9 @@
 {{ form_row(form.name) }}
 
 {% if form.configuration is defined %}
-<div class="form-group">
-    {{ form_widget(form.configuration) }}
-</div>
+    <div class="form-group">
+        {{ form_widget(form.configuration) }}
+    </div>
 {% endif %}
 
 <button type="submit" class="btn btn-primary action-save" style="margin-left: 20px">
@@ -20,12 +20,12 @@
 {{ form_end(form) }}
 
 <style>
-.form-group .form-group {
-    clear: both;
-    padding: 0;
-}
+    .form-group .form-group {
+        clear: both;
+        padding: 0;
+    }
 
-.form-group{
-    display: block;
-}
+    .form-group {
+        display: block;
+    }
 </style>

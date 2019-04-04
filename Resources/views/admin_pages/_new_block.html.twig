@@ -4,11 +4,12 @@
     <div class="field-group col-12" style="padding-right: 25px;padding-top: 15px;">
         <div class="box box-default">
             <div class="box-header with-border">
-                <h3 class="box-title" style="display: inline-block">{{ "New block"|trans({}, "OperaAdmin") }}</h3>
-                    <a class="pull-collapse" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="box-body-new"
-                       href="#box-body-new">
-                        <i class="fa fa-500px" aria-hidden="true" style="float: right; padding-top: 1em"></i>
-                    </a>
+                <h3 class="box-title">{{ "New block"|trans({}, "OperaAdmin") }}</h3>
+                <a class="pull-collapse" role="button" data-toggle="collapse" aria-expanded="false"
+                   aria-controls="box-body-new"
+                   href="#box-body-new">
+                    <i class="fa fa-500px" aria-hidden="true"></i>
+                </a>
             </div>
 
             <div class="box-body collapse" id="box-body-new" aria-expanded="false">
@@ -40,14 +41,24 @@
     a.collapsed .fa::before {
         content: "\f139";
     }
+
     .field-group .box-header.with-border {
         background: #F0F0F0;
         border-bottom-color: #DDD;
         padding: 11px 10px 10px 15px;
     }
 
+    .box-title {
+        display: inline-block;
+    }
+
     .box-header.with-border {
         border-bottom: 1px solid #f4f4f4;
         border-bottom-color: rgb(244, 244, 244);
+    }
+
+    .fa {
+        float: right !important;
+        padding-top: 1em;
     }
 </style>
