@@ -1,25 +1,25 @@
 {% form_theme form with easyadmin_config('design.form_theme') %}
 
-
 <div class="row">
-    <div class="field-group col-xs-12 ">
+    <div class="field-group col-12" style="padding-right: 25px;padding-top: 15px;">
         <div class="box box-default">
             <div class="box-header with-border">
                 <h3 class="box-title">{{ "New block"|trans({}, "OperaAdmin") }}</h3>
-                <a class="pull-right collapsed" role="button" data-toggle="collapse" aria-expanded="false" href="#box-body-new">
-                    <i class="fa fa-plus-square-o"></i>
-                    <i class="fa fa-minus-square-o"></i>
+                <a class="pull-collapse" role="button" data-toggle="collapse" aria-expanded="false"
+                   aria-controls="box-body-new"
+                   href="#box-body-new">
+                    <i class="fa" aria-hidden="true"></i>
                 </a>
             </div>
-            
-            <div class="box-body collapsed collapse" id="box-body-new" aria-expanded="false">    
+
+            <div class="box-body collapse" id="box-body-new" aria-expanded="false">
                 <div class="row">
-                    <div class="col-xs-12 form-renderer">
+                    <div class="col-12 form-renderer">
                         {{ form_start(form) }}
-                            {{ form_rest(form) }}
-                            <button type="submit" class="btn btn-primary action-save">
-                                <i class="fa fa-save"></i> {{ 'action.save'|trans }}
-                            </button>
+                        {{ form_rest(form) }}
+                        <button type="submit" class="btn btn-primary action-save" style="margin-left: 25px">
+                            <i class="fa fa-save"></i> {{ 'action.save'|trans }}
+                        </button>
                         {{ form_end(form) }}
                     </div>
                 </div>
@@ -27,3 +27,38 @@
         </div>
     </div>
 </div>
+
+<style>
+    .field-group .box {
+        border: 1px solid #DDD;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    a.fa:before {
+        content: "\f13a";
+    }
+
+    a.collapsed .fa::before {
+        content: "\f139";
+    }
+
+    .field-group .box-header.with-border {
+        background: #F0F0F0;
+        border-bottom-color: #DDD;
+        padding: 11px 10px 10px 15px;
+    }
+
+    .box-title {
+        display: inline-block;
+    }
+
+    .box-header.with-border {
+        border-bottom: 1px solid #f4f4f4;
+        border-bottom-color: rgb(244, 244, 244);
+    }
+
+    .fa {
+        float: right !important;
+        padding-top: 1em;
+    }
+</style>

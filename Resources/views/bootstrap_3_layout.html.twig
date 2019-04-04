@@ -394,11 +394,11 @@
 
         <div class="row">
             {% if form.delete is defined %}
-            <div class="col-sm-3 col-md-2">
+            <div class="col-3 col-2">
                 {{ form_row(form.delete, { label: 'action.delete' }) }}
             </div>
             {% endif %}
-            <div class="{{ form.delete is defined ? 'col-sm-9 col-md-10' : 'col-sm-12' }}">
+            <div class="{{ form.delete is defined ? 'col-9 col-10' : 'col-12' }}">
                 {{ form_widget(form.file) }}
             </div>
         </div>
