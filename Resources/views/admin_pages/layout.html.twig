@@ -44,7 +44,7 @@
                                             <div class="d-flex flex-row-reverse bd-highlight">
                                                 <a class="pull collapsed" role="button" data-toggle="collapse"
                                                    aria-expanded="false" href="#box-body-{{ _block.id }}">
-                                                    <i class="fa" aria-hidden="true"></i>
+                                                    <i class="fa" aria-hidden="true" style="float: right;"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -82,12 +82,12 @@
             list-style-type: none;
         }
 
-        a .fa:before {
-            content: "\f13a";
-        }
-
-        a.collapsed .fa::before {
+        [data-toggle="collapse"] .fa:before {
             content: "\f139";
+        }
+        ​
+        [data-toggle="collapse"].collapsed .fa:before {
+            content: "\f13a";
         }
 
         .fa {
