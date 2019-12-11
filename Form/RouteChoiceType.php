@@ -34,11 +34,11 @@ class RouteChoiceType extends AbstractType
     {
         preg_match('/.*\\\\(.*)::.*/', $controllerRoutePath, $matches);
 
-        if (isset($matches[1])) {
-            return $matches[1];
+        if (!isset($matches[1])) {
+            return null;
         }
 
-        return null;
+        return $matches[1];
     }
 
     public function configureOptions(OptionsResolver $resolver)
