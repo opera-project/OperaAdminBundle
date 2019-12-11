@@ -21,7 +21,6 @@ class RouteChoiceType extends AbstractType
                     $this->routes["Other"][$routeName] = $routeName;
                 }
             }
-
         }
     }
 
