@@ -61,27 +61,30 @@ class AdminPagesController extends Controller
 
     /**
      * @Route("/pages/block/{block}/change-area/{area}", methods="POST", name="change_block_area")
+     * Move a block from one page area to another-one (last position)
      */
     public function changeBlockArea(Block $block, string $area)
     {
-        dump($block, $area);
         $currentArea = $block->getArea();
 
-        dump(in_array($area, $block->getPage()->getLayout()->getConfiguration()["areas"]));
         if (in_array($area, $block->getPage()->getLayout()->getConfiguration()["areas"])) {
+            $position = 0;
+
+            foreach ($block->getPage()->getBlocks() as $areaBlock) {
+                if ($areaBlock->getArea() == $area && $areaBlock->getPosition() > $position) {
+                    $position = $areaBlock->getPosition() + 1;
+                }
+            }
+
+            $block->setPosition($position);
             $block->setArea($area);
-            // todo position
+
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($block);
             $entityManager->flush();
-            dump("flush");
-
-            return $this->redirectToRoute('opera_admin_pages_blocks', [
-                'id' => $block->getPage()->getId(),
-                'area' => $currentArea,
-            ]);
         }
-        // TODO
+
         return new Response();
     }
 

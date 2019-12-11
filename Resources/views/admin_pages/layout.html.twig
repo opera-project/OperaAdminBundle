@@ -16,7 +16,9 @@
         <div id="layout" class="col-4" style="padding-top: 14px">
             {% for name in page.layout.configuration.areas %}
                 <label class="droppable area area-{{ name }} {% if (loop.first and (area is not defined or area == '')) or area == name %}active{% endif %}"
-                       for="area_{{ name }}" ondrop="dropZone(event)" ondragover="dragoverZone(event)">
+                       for="area_{{ name }}" ondrop="dropZone(event)" ondragover="dragoverZone(event)"
+                       data-area-name="{{ name }}"
+                       >
                     <input type="radio" id="area_{{ name }}" name="current_area" value="{{ name }}"
                            {% if (loop.first and (area is not defined or area == '')) or area == name %}checked{% endif %}/>
                     {{ name }}
@@ -45,11 +47,12 @@
                                 ondragleave="dragLeave(event)"
                                 ondrop="drop(event)"
                                 ondragenter="dragEnter(event)"
-                                block-id="{{_block.id}}">
+                                data-area="{{ _block.area }}">
                                     <div class="field-group">
                                         <div class="box-header with-border sort-handle">
-                                            <h3 class="box-title" style="display: inline-block">{{ _block.name }}
-                                                (type: {{ _block.type }}) {{_block.position}}</h3>
+                                            <h3 class="box-title" style="display: inline-block">
+                                                {{ _block.name }} (type: {{ _block.type }})
+                                            </h3>
                                             <div class="d-flex flex-row-reverse bd-highlight">
                                                 <a class="pull collapsed" role="button" data-toggle="collapse"
                                                    aria-expanded="false" href="#box-body-{{ _block.id }}">
@@ -135,57 +138,65 @@
         var dragging = null;
 
             function dropZone(ev) {
-                console.log("todo 2");
-                console.log("target:", ev.target.children[0]);
-                console.log("value", ev.target.children[0].value);
+                if (dragging.dataset.area == ev.target.children[0].value) {
+                    alert("Block is already in area " + ev.target.children[0].value);
+                    return;
+                }
+                
                 $.ajax({
                     type: "POST",
                     url: "/admin/pages/block/"+dragging.dataset.blockId+"/change-area/"+ev.target.children[0].value,
-                    // data: {positions: positions},
                     success: function (data) {
-                        // console.log("success", data);
                         $(".sortable").removeClass('loading');
                         dragging.remove();
-                        // todo renvoyer les position actuelles
+                        sendPositions(true);
                     }
                 });
             }
 
             function dragoverZone(ev) {
-                console.log("todo 1");
                 ev.preventDefault();
             }
 
             function dragStart(ev) {
-                // console.log("dragstart_handler");
                 dragging = event.target;
                 $('.current-dragged-item').removeClass('current-dragged-item');
                  dragging.classList.add('current-dragged-item');
             }
 
-            function dragEnd(ev) {
-                // console.log("drag_end");
+            function sendPositions(reload = false) {
+
                 var positions = {};
 
                 $('.tab_area:visible .sortable > li').each(function (index, element) {
                     positions[$(element).data('block-id')] = index;
                 });
-                // console.log("positions", positions);
+
+                if (!Object.keys(positions).length) {
+                    return;
+                }
                 $(".sortable").addClass('loading');
                 $.ajax({
                     type: "POST",
                     url: $('.tab_area:visible').data('update-position-url'),
                     data: {positions: positions},
                     success: function (data) {
-                        // console.log("success", data);
                         $(".sortable").removeClass('loading');
+                        if (reload) {
+                            location.reload();
+                        }
                     }
                 });
-                // dragging = null;
+            }
+
+            function dragEnd(ev) {
+                sendPositions();
+                $('.current-droppable').each((pos, el) => {
+                    el.classList.remove("current-droppable");
+                })
             }
 
             function dragOver() {
-                // console.log("drag_over", event.target.classList);
                 event.preventDefault();
                 target = event.target;
                 if (!event.target.classList.contains("block-row")) {
@@ -196,7 +207,6 @@
             }
 
             function dragLeave() {
-                // console.log("dragLeave", event.target.classList);
                 target = event.target;
                 if (!event.target.classList.contains("block-row")) {
                     target = event.target.closest(".block-row");
@@ -206,11 +216,9 @@
             }
 
             function drop() {
-                console.log("drop");
                 event.preventDefault();
                 target = event.target;
                 if (!event.target.classList.contains("block-row")) {
-                    // console.log("special");
                     target = event.target.closest(".block-row");
                 }
                 target.style['border-bottom'] = '';
@@ -224,6 +232,11 @@
                 }
 
                 target.style['border-bottom'] = 'solid 4px blue';
+                $('.droppable').each((pos, el) => {
+                    if (!el.classList.contains("active")) {
+                        el.classList.add("current-droppable");
+                    }
+                });
             }
 
         $(document).ready(function () {
@@ -341,6 +354,10 @@
 
         .current-dragged-item .field-group .box-header.with-border {
             background-color: #e3e7ed;
+        }
+
+        .current-droppable {
+            border-color: blue;
         }
 
         {% endfor %}
