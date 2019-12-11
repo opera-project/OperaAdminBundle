@@ -15,8 +15,10 @@
     <div class="row">
         <div id="layout" class="col-4" style="padding-top: 14px">
             {% for name in page.layout.configuration.areas %}
-                <label class="area area-{{ name }} {% if (loop.first and (area is not defined or area == '')) or area == name %}active{% endif %}"
-                       for="area_{{ name }}">
+                <label class="droppable area area-{{ name }} {% if (loop.first and (area is not defined or area == '')) or area == name %}active{% endif %}"
+                       for="area_{{ name }}" ondrop="dropZone(event)" ondragover="dragoverZone(event)"
+                       data-area-name="{{ name }}"
+                       >
                     <input type="radio" id="area_{{ name }}" name="current_area" value="{{ name }}"
                            {% if (loop.first and (area is not defined or area == '')) or area == name %}checked{% endif %}/>
                     {{ name }}
@@ -36,11 +38,21 @@
                     {% if blocks_in_area[name] is defined %}
                         <ul class="sortable">
                             {% for _block in blocks_in_area[name] %}
-                                <li class="row" data-block-id="{{ _block.id }}">
+                                <li class="row block-row"
+                                data-block-id="{{ _block.id }}"
+                                draggable="true"
+                                ondragend="dragEnd(event)"
+                                ondragstart="dragStart(event)"
+                                ondragover="dragOver(event)"
+                                ondragleave="dragLeave(event)"
+                                ondrop="drop(event)"
+                                ondragenter="dragEnter(event)"
+                                data-area="{{ _block.area }}">
                                     <div class="field-group">
                                         <div class="box-header with-border sort-handle">
-                                            <h3 class="box-title" style="display: inline-block">{{ _block.name }}
-                                                (type: {{ _block.type }})</h3>
+                                            <h3 class="box-title" style="display: inline-block">
+                                                {{ _block.name }} (type: {{ _block.type }})
+                                            </h3>
                                             <div class="d-flex flex-row-reverse bd-highlight">
                                                 <a class="pull collapsed" role="button" data-toggle="collapse"
                                                    aria-expanded="false" href="#box-body-{{ _block.id }}">
@@ -123,35 +135,113 @@
             }
         }
 
+        var dragging = null;
+
+            function dropZone(ev) {
+                if (dragging.dataset.area == ev.target.children[0].value) {
+                    alert("Block is already in area " + ev.target.children[0].value);
+                    return;
+                }
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/pages/block/"+dragging.dataset.blockId+"/change-area/"+ev.target.children[0].value,
+                    success: function (data) {
+                        $(".sortable").removeClass('loading');
+                        dragging.remove();
+                        sendPositions(true);
+                    }
+                });
+            }
+
+            function dragoverZone(ev) {
+                ev.preventDefault();
+            }
+
+            function dragStart(ev) {
+                dragging = event.target;
+                $('.current-dragged-item').removeClass('current-dragged-item');
+                 dragging.classList.add('current-dragged-item');
+            }
+
+            function sendPositions(reload = false) {
+
+                var positions = {};
+
+                $('.tab_area:visible .sortable > li').each(function (index, element) {
+                    positions[$(element).data('block-id')] = index;
+                });
+
+                if (!Object.keys(positions).length) {
+                    return;
+                }
+                $(".sortable").addClass('loading');
+                $.ajax({
+                    type: "POST",
+                    url: $('.tab_area:visible').data('update-position-url'),
+                    data: {positions: positions},
+                    success: function (data) {
+                        $(".sortable").removeClass('loading');
+                        if (reload) {
+                            location.reload();
+                        }
+                    }
+                });
+            }
+
+            function dragEnd(ev) {
+                sendPositions();
+                $('.current-droppable').each((pos, el) => {
+                    el.classList.remove("current-droppable");
+                })
+            }
+
+            function dragOver() {
+                event.preventDefault();
+                target = event.target;
+                if (!event.target.classList.contains("block-row")) {
+                    target = event.target.closest(".block-row");
+                }
+                targetted = target;
+                target.style['border-bottom'] = 'solid 4px blue';
+            }
+
+            function dragLeave() {
+                target = event.target;
+                if (!event.target.classList.contains("block-row")) {
+                    target = event.target.closest(".block-row");
+                }
+
+                target.style['border-bottom'] = '';
+            }
+
+            function drop() {
+                event.preventDefault();
+                target = event.target;
+                if (!event.target.classList.contains("block-row")) {
+                    target = event.target.closest(".block-row");
+                }
+                target.style['border-bottom'] = '';
+                target.parentElement.insertBefore(dragging, target.nextSibling);
+            }
+
+            function dragEnter() {
+                target = event.target;
+                if (!event.target.classList.contains("block-row")) {
+                    target = event.target.closest(".block-row");
+                }
+
+                target.style['border-bottom'] = 'solid 4px blue';
+                $('.droppable').each((pos, el) => {
+                    if (!el.classList.contains("active")) {
+                        el.classList.add("current-droppable");
+                    }
+                });
+            }
+
         $(document).ready(function () {
 
             copyHiddenInputToAceEditor();
-
-            $(".sortable").sortable({
-                placeholder: "ui-state-highlight",
-                forcePlaceholderSize: true,
-                handle: '.sort-handle',
-                update: function (event, ui) {
-                    var positions = {};
-
-                    $('.tab_area:visible .sortable > li').each(function (index, element) {
-                        positions[$(element).data('block-id')] = index;
-                    });
-
-                    $(".sortable").addClass('loading');
-
-                    $.ajax({
-                        type: "POST",
-                        url: $('.tab_area:visible').data('update-position-url'),
-                        data: {positions: positions},
-                        success: function (data) {
-                            $(".sortable").removeClass('loading');
-                        }
-                    });
-
-                }
-            });
-            $(".sortable").disableSelection();
 
             $("#new_block_area").val($("[name=current_area]:checked")[0].value);
 
@@ -251,6 +341,22 @@
         {% for alias, name in page.layout.configuration.areas %}
         .area-{{ name }} {
             grid-area: {{ alias }};
+        }
+
+        .sortable li {
+            margin: unset;
+            margin-top: unset;
+            margin-right: unset;
+            margin-bottom: unset;
+            margin-left: unset;
+        }
+
+        .current-dragged-item .field-group .box-header.with-border {
+            background-color: #e3e7ed;
+        }
+
+        .current-droppable {
+            border-color: blue;
         }
 
         {% endfor %}
